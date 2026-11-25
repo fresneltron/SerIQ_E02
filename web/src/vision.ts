@@ -44,15 +44,19 @@ const MODEL_PATHS: Record<ExerciseId, string> = {
 }
 
 export class BrowserLandmarker {
+  private analysisOnly = false
   private hand?: HandLandmarker
   private pose?: PoseLandmarker
   private lastHandDetection = Number.NEGATIVE_INFINITY
   private canvas = document.createElement('canvas')
   private context = this.canvas.getContext('2d', { willReadFrequently: true })
 
-  static async create(_exercise: ExerciseId) {
+  static async create(exercise: ExerciseId, analysisOnly = false) {
     const instance = new BrowserLandmarker()
+    instance.analysisOnly = analysisOnly
     const vision = await FilesetResolver.forVisionTasks('/wasm')
+    const needPose = !analysisOnly || exercise === 'E02'
+    const needHand = !analysisOnly || exercise !== 'E02'
     const poseOptions = (delegate: 'GPU' | 'CPU') => PoseLandmarker.createFromOptions(vision, {
       baseOptions: { modelAssetPath: '/models/pose_landmarker_full.task', delegate },
       runningMode: 'VIDEO', numPoses: 1,
@@ -65,15 +69,19 @@ export class BrowserLandmarker {
       minHandDetectionConfidence: 0.25, minHandPresenceConfidence: 0.25,
       minTrackingConfidence: 0.25,
     })
-    instance.pose = await poseOptions('GPU').catch(() => poseOptions('CPU'))
-    instance.hand = await handOptions('GPU').catch(() => handOptions('CPU'))
+    if (needPose) instance.pose = await poseOptions('GPU').catch(() => poseOptions('CPU'))
+    if (needHand) instance.hand = await handOptions('GPU').catch(() => handOptions('CPU'))
     return instance
   }
 
   detect(source: HTMLVideoElement, timestampMs: number, t: number): Sample {
     const sample: Sample = { t, width: source.videoWidth, height: source.videoHeight }
     if (!this.context || !source.videoWidth || !source.videoHeight) return sample
-    const scale = Math.min(1, 640 / Math.max(source.videoWidth, source.videoHeight))
+    // Upload analysis runs on the main thread, often on an older phone.
+    // A smaller inference frame keeps the UI responsive while retaining enough
+    // resolution for shoulder/elbow/wrist pose landmarks.
+    const maxDimension = this.analysisOnly ? 480 : 640
+    const scale = Math.min(1, maxDimension / Math.max(source.videoWidth, source.videoHeight))
     this.canvas.width = Math.max(1, Math.round(source.videoWidth * scale))
     this.canvas.height = Math.max(1, Math.round(source.videoHeight * scale))
     this.context.drawImage(source, 0, 0, this.canvas.width, this.canvas.height)

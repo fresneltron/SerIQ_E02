@@ -1,7 +1,7 @@
-const CACHE_NAME = 'seriq-shell-v1'
+const CACHE_NAME = 'seriq-shell-v2'
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(['/','/manifest.webmanifest','/icons/seriq.svg','/icons/seriq-192.png'])))
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(['/','/manifest.webmanifest','/icons/seriq.svg','/icons/seriq-192.png','/icons/seriq-512.png','/icons/apple-touch-icon.png'])))
   self.skipWaiting()
 })
 
