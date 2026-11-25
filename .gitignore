@@ -1,0 +1,15 @@
+demo_videos/
+Exercise/
+cache_e02/
+session_summary.json
+__pycache__/
+*.pyc
+.cache_mobile_models/
+An upper limb stroke rehabilitation exercise video/
+diag_cam.avi
+web/node_modules/
+web/dist/
+web/.env
+web/.env.*
+!web/.env.example
+.DS_Store
