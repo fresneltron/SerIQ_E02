@@ -47,7 +47,7 @@ const copy = {
     status: 'Состояние', modelMissing: 'Для этого упражнения модель ещё обучается. Выберите E02, чтобы попробовать камеру и обработку видео.',
     cameraError: 'Не удалось открыть камеру. Проверьте разрешение камеры в Safari или загрузите видео.',
     cameraSecureError: 'Камера работает только на защищённом HTTPS-сайте. Откройте опубликованную ссылку SerIQ.', cameraUnsupportedError: 'Этот режим не предоставляет камеру. Откройте сайт в Safari или загрузите видео.', cameraPermissionError: 'Доступ к камере не выдан. В Safari проверьте настройки сайта: Камера → Разрешить. В PWA iPhone может снова запросить доступ при новом запуске.', cameraBusyError: 'Камера занята другим приложением. Закройте его и попробуйте снова.', cameraNotFoundError: 'Не удалось найти камеру. Проверьте её в настройках iPhone или загрузите видео.', cameraRetry: 'Попробовать включить камеру снова', cameraPreviewHelp: 'Камера разрешена, но iPhone не показывает поток. Нажмите кнопку для повторного запуска или откройте SerIQ в Safari.', cameraPreviewRetry: 'Показать камеру', openSafari: 'Открыть SerIQ в Safari',
-    modelError: 'Не удалось загрузить модель анализа. Проверьте интернет и попробуйте снова.', fileError: 'Не удалось прочитать видео. Попробуйте MP4/MOV длительностью до 45 секунд.',
+    modelError: 'Не удалось загрузить модель анализа. Проверьте интернет и попробуйте снова.', fileError: 'Не удалось прочитать этот ролик. Выберите MP4 или MOV длительностью до 15 секунд и попробуйте ещё раз.', fileFormatError: 'iPhone не смог открыть видеокодек этого файла. Экспортируйте ролик как H.264 MP4 или попробуйте MOV.', filePlayError: 'Не удалось запустить видео на этом устройстве. Попробуйте открыть его в Safari или выбрать другой файл.',
     prepareVideo: 'Подготавливаем видео…', scanningVideo: 'Идёт последовательная проверка видео', finalizingVideo: 'Завершаем анализ…', videoStalled: 'Воспроизведение остановилось. Повторите проверку или выберите другой MP4/MOV.',
     durationTip: 'Запишите одно-два спокойных повторения, затем нажмите «Готово».',
     disclaimer: 'Результат помогает следить за занятиями и не заменяет консультацию врача.',
@@ -86,7 +86,7 @@ const copy = {
     status: 'Күйі', modelMissing: 'Бұл жаттығудың моделі әлі дайын емес. Камера мен бейне өңдеуді көру үшін E02 таңдаңыз.',
     cameraError: 'Камера ашылмады. Safari баптауынан рұқсат беріңіз немесе бейне жүктеңіз.',
     cameraSecureError: 'Камера тек қорғалған HTTPS сайтында жұмыс істейді. SerIQ жарияланған сілтемесін ашыңыз.', cameraUnsupportedError: 'Бұл режим камераға қол жеткізе алмайды. Safari браузерінде ашыңыз немесе бейне жүктеңіз.', cameraPermissionError: 'Камераға рұқсат берілмеді. Safari сайт баптауынан Камера → Рұқсат ету таңдаңыз. iPhone PWA жаңа іске қосылғанда рұқсатты қайта сұрауы мүмкін.', cameraBusyError: 'Камераны басқа қолданба пайдаланып тұр. Оны жауып, қайта көріңіз.', cameraNotFoundError: 'Камера табылмады. iPhone баптауын тексеріңіз немесе бейне жүктеңіз.', cameraRetry: 'Камераны қайта қосу', cameraPreviewHelp: 'Камераға рұқсат бар, бірақ iPhone бейнені көрсетпеді. Қайта іске қосыңыз немесе SerIQ-ті Safari-де ашыңыз.', cameraPreviewRetry: 'Камераны көрсету', openSafari: 'SerIQ-ті Safari-де ашу',
-    modelError: 'Қозғалыс моделін жүктеу мүмкін болмады. Интернетті тексеріп, қайта көріңіз.', fileError: 'Бейнені оқу мүмкін болмады. Ұзақтығы 45 секундқа дейінгі MP4/MOV қолданып көріңіз.',
+    modelError: 'Қозғалыс моделін жүктеу мүмкін болмады. Интернетті тексеріп, қайта көріңіз.', fileError: 'Бұл бейнені оқу мүмкін болмады. 15 секундқа дейінгі MP4 немесе MOV таңдап, қайта көріңіз.', fileFormatError: 'iPhone бұл файлдың бейне кодегін аша алмады. H.264 MP4 форматына экспорттаңыз немесе MOV қолданып көріңіз.', filePlayError: 'Бұл құрылғыда бейнені іске қосу мүмкін болмады. Safari-де ашып көріңіз немесе басқа файл таңдаңыз.',
     prepareVideo: 'Бейне дайындалуда…', scanningVideo: 'Бейне ретімен тексерілуде', finalizingVideo: 'Талдау аяқталуда…', videoStalled: 'Бейне тоқтап қалды. Қайта тексеріңіз немесе басқа MP4/MOV таңдаңыз.',
     durationTip: 'Бір-екі рет асықпай қайталап, «Дайын» батырмасын басыңыз.',
     disclaimer: 'Нәтиже жаттығуларды бақылауға көмектеседі, бірақ дәрігер кеңесін алмастырмайды.',
@@ -375,7 +375,7 @@ function App() {
       try {
         nextStream = await navigator.mediaDevices.getUserMedia({
           audio: false,
-          video: { facingMode: { ideal: 'environment' }, width: { ideal: 640 }, height: { ideal: 480 } },
+          video: { facingMode: { ideal: 'user' }, width: { ideal: 640 }, height: { ideal: 480 } },
         })
       } catch (cause) {
         const name = cause instanceof DOMException ? cause.name : ''
@@ -569,6 +569,13 @@ function App() {
     setAnalysisStage('preparing')
     setError('')
     try {
+      // Start playback in the direct click handler before awaiting metadata.
+      // iOS Safari can reject play() if it is first called after async waits.
+      video.muted = true
+      video.playsInline = true
+      video.setAttribute('playsinline', '')
+      const initialPlayback = video.play()
+      void initialPlayback.catch(() => undefined)
       const waitForMedia = (eventName: 'loadedmetadata' | 'loadeddata' | 'seeked', ready: () => boolean, timeoutText: string) => new Promise<void>((resolve, reject) => {
         if (ready()) { resolve(); return }
         const timeout = window.setTimeout(() => finish(new Error(timeoutText)), 12000)
@@ -585,11 +592,11 @@ function App() {
       })
       if (video.readyState < 1) await new Promise<void>((resolve, reject) => {
         void waitForMedia('loadedmetadata', () => video.readyState >= 1, 'video metadata timeout').then(resolve, reject)
-        video.load()
       })
       if (video.readyState < 2) await waitForMedia('loadeddata', () => video.readyState >= 2, 'video frame timeout')
       if (!Number.isFinite(video.duration) || video.duration <= 0) throw new Error('invalid video duration')
-      const duration = Math.min(video.duration, 45)
+      await initialPlayback
+      const duration = Math.min(video.duration, 15)
       const samples: Sample[] = []
       video.pause()
       if (video.currentTime > 0.05) {
@@ -629,7 +636,11 @@ function App() {
       await finishAndScore(samples, true)
     } catch (cause) {
       console.error(cause)
-      setError(cause instanceof Error && cause.message.includes('stalled') ? 'video_stalled' : 'file_error')
+      const message = cause instanceof Error ? cause.message : ''
+      const errorName = cause instanceof DOMException ? cause.name : ''
+      setError(message.includes('stalled') ? 'video_stalled'
+        : errorName === 'NotSupportedError' || message.includes('decode failed') ? 'file_format_error'
+          : errorName === 'NotAllowedError' || message.toLowerCase().includes('play') ? 'file_play_error' : 'file_error')
       video.pause()
     } finally { setProcessing(false) }
   }
@@ -675,7 +686,9 @@ function App() {
     camera_busy: t.cameraBusyError, camera_missing: t.cameraNotFoundError,
   }
   const errorText = error === 'model_missing' ? t.modelMissing : error === 'model_error' ? t.modelError
-    : error === 'video_stalled' ? t.videoStalled : cameraErrors[error] ?? (error ? t.fileError : '')
+    : error === 'video_stalled' ? t.videoStalled
+      : error === 'file_format_error' ? t.fileFormatError
+        : error === 'file_play_error' ? t.filePlayError : cameraErrors[error] ?? (error ? t.fileError : '')
 
   return (
     <main className="app-shell">
